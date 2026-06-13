@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#165DFF">
+  <meta name="description" content="胶量计算器 - 根据粘接面积、胶层厚度、胶密度和包装量快速计算用胶量">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="胶量计算器">
+
+  <title>胶量计算器</title>
+
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" type="image/svg+xml" href="icon.svg">
+  <link rel="apple-touch-icon" href="icon.svg">
+
+  <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- 背景装饰圆球 -->
+  <div class="bg-decoration">
+    <span class="bg-blob blob-1"></span>
+    <span class="bg-blob blob-2"></span>
+    <span class="bg-blob blob-3"></span>
+    <span class="bg-grid"></span>
+  </div>
+
+  <header class="app-header">
+    <div class="brand">
+      <span class="brand-icon">
+        <i class="fa fa-calculator"></i>
+      </span>
+      <div class="brand-text">
+        <h1 class="app-title">胶量计算器</h1>
+        <p class="app-subtitle">
+          <i class="fa fa-calculator"></i> 快速计算 · 一键导出
+        </p>
+      </div>
+    </div>
+
+    <div class="install-bar" id="installBar">
+      <i class="fa fa-cloud-download"></i>
+      <span>可安装到桌面，离线使用</span>
+      <button id="installBtn" type="button">立即安装</button>
+    </div>
+  </header>
+
+  <main class="app-main">
+
+    <!-- 计算卡片 -->
+    <section class="card card-glow">
+
+      <div class="card-header">
+        <span class="chip chip-blue">
+          <i class="fa fa-flask"></i> 输入参数
+        </span>
+        <span class="hint">所有数值均为正数</span>
+      </div>
+
+      <form id="calculatorForm" class="form" autocomplete="off">
+        <div class="form-row">
+          <label for="projectName" class="form-label">
+            <span class="label-icon">
+              <i class="fa fa-file-text-o"></i>
+            </span>
+            项目名称 <span class="optional">(可选)</span>
+          </label>
+          <input type="text" id="projectName" placeholder="例如：车间A区粘接工程" class="form-input">
+        </div>
+
+        <div class="form-grid">
+          <div class="form-row">
+            <label for="area" class="form-label">
+              <span class="label-icon blue">
+                <i class="fa fa-square-o"></i>
+              </span>
+              粘接面积
+              <span class="unit">m²</span>
+            </label>
+            <input type="number" id="area" step="any" min="0" placeholder="0.00" required class="form-input">
+          </div>
+
+          <div class="form-row">
+            <label for="thickness" class="form-label">
+              <span class="label-icon green">
+                <i class="fa fa-arrows-v"></i>
+              </span>
+              胶层厚度
+              <span class="unit">mm</span>
+            </label>
+            <input type="number" id="thickness" step="any" min="0" placeholder="0.00" required class="form-input">
+          </div>
+
+          <div class="form-row">
+            <label for="density" class="form-label">
+              <span class="label-icon purple">
+                <i class="fa fa-balance-scale"></i>
+              </span>
+              胶的密度
+              <span class="unit">g/cm³</span>
+            </label>
+            <input type="number" id="density" step="0.01" min="0" placeholder="0.00" required class="form-input">
+          </div>
+
+          <div class="form-row">
+            <label for="packageVol" class="form-label">
+              <span class="label-icon orange">
+                <i class="fa fa-cube"></i>
+              </span>
+              包装量
+              <span class="unit">ml</span>
+            </label>
+            <input type="number" id="packageVol" step="any" min="0" placeholder="0.00" required class="form-input">
+          </div>
+        </div>
+
+        <div class="btn-group">
+          <button type="button" id="calcBtn" class="btn btn-primary btn-shine">
+            <i class="fa fa-calculator"></i>
+            <span>计算胶量</span>
+          </button>
+          <button type="button" id="resetBtn" class="btn btn-ghost">
+            <i class="fa fa-refresh"></i>
+            <span>重置</span>
+          </button>
+        </div>
+      </form>
+
+      <!-- 结果区域 -->
+      <div id="result" class="result hidden">
+        <div class="result-header">
+          <span class="chip chip-success">
+            <i class="fa fa-check-circle"></i> 计算结果
+          </span>
+          <span class="result-time" id="resultTime"></span>
+        </div>
+
+        <div class="result-grid">
+          <div class="result-card">
+            <span class="result-icon icon-blue">
+              <i class="fa fa-tint"></i>
+            </span>
+            <div class="result-content">
+              <span class="result-label">体积</span>
+              <strong id="volumeResult" class="result-value">0</strong>
+              <span class="result-unit">ml</span>
+            </div>
+          </div>
+
+          <div class="result-card">
+            <span class="result-icon icon-purple">
+              <i class="fa fa-balance-scale"></i>
+            </span>
+            <div class="result-content">
+              <span class="result-label">质量</span>
+              <strong id="massResult" class="result-value">0</strong>
+              <span class="result-unit">g</span>
+            </div>
+          </div>
+
+          <div class="result-card highlight-card">
+            <span class="result-icon icon-green">
+              <i class="fa fa-shopping-bag"></i>
+            </span>
+            <div class="result-content">
+              <span class="result-label">所需支数</span>
+              <strong id="tubesResult" class="result-value">0</strong>
+              <span class="result-unit">支</span>
+            </div>
+            <span class="highlight-ribbon">
+              <i class="fa fa-star"></i> 关键
+            </span>
+          </div>
+        </div>
+
+        <div class="export-group">
+          <button type="button" id="exportWordBtn" class="btn btn-word btn-shine">
+            <i class="fa fa-file-word-o"></i>
+            <span>导出 Word</span>
+          </button>
+          <button type="button" id="exportPdfBtn" class="btn btn-pdf btn-shine">
+            <i class="fa fa-file-pdf-o"></i>
+            <span>导出 PDF</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 历史记录 -->
+    <section class="card">
+      <div class="card-head">
+        <h3 class="card-title">
+          <span class="title-icon-round">
+            <i class="fa fa-history"></i>
+          </span>
+          历史记录
+        </h3>
+        <button type="button" id="clearHistoryBtn" class="btn-link">
+          <i class="fa fa-trash-o"></i> 清空
+        </button>
+      </div>
+      <div id="historyList" class="history-list empty">
+        <p class="empty-text">
+          <i class="fa fa-inbox"></i> 暂无历史记录
+        </p>
+      </div>
+    </section>
+
+    <!-- 使用说明 -->
+    <section class="card">
+      <h3 class="card-title">
+        <span class="title-icon-round">
+          <i class="fa fa-info-circle"></i>
+        </span>
+        使用说明
+      </h3>
+      <ul class="info-list">
+        <li>
+          <span class="step-num">1</span>
+          <span>输入项目名称、粘接面积、胶层厚度、胶的密度和包装量</span>
+        </li>
+        <li>
+          <span class="step-num">2</span>
+          <span>点击"计算胶量"按钮，立即得到体积、质量和所需支数</span>
+        </li>
+        <li>
+          <span class="step-num">3</span>
+          <span>可将结果导出为 Word 或 PDF 文件，方便打印和保存</span>
+        </li>
+        <li>
+          <span class="step-num">4</span>
+          <span>历史记录保存在本地，随时回看或一键填入</span>
+        </li>
+      </ul>
+    </section>
+
+  </main>
+
+  <footer class="app-footer">
+    <p>
+      <i class="fa fa-heart pulse"></i>
+      &copy; <span id="year"></span> 胶量计算器
+    </p>
+  </footer>
+
+  <div id="toast" class="toast" role="status" aria-live="polite">
+    <span id="toastIcon" class="toast-icon"></span>
+    <span id="toastText"></span>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

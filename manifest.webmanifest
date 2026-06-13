@@ -1,0 +1,21 @@
+{
+  "name": "胶量计算器",
+  "short_name": "胶量计算",
+  "description": "根据粘接面积、胶层厚度、胶密度和包装量快速计算用胶量，并支持导出 Word / PDF 报告。",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#F1F5F9",
+  "theme_color": "#165DFF",
+  "lang": "zh-CN",
+  "categories": ["productivity", "tools"],
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
